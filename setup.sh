@@ -100,3 +100,9 @@ systemctl start \
   snapper-timeline.timer snapper-cleanup.timer
 
 echo -e "\n¡Instalación completada! Reinicia el sistema para cargar todo correctamente."
+
+# Esperar que el usuario presione una tecla
+read -n 1 -s -r -p "Presiona cualquier tecla para reiniciar..."
+
+# Reiniciar el sistema
+reboot

@@ -7,7 +7,8 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# 2. Habilitar multilib en /etc/pacman.conf
+# 2. Habilitar repositorios extra y multilib en /etc/pacman.conf
+sed -i '/^\[extra\]/,/Include/ s/^#//' /etc/pacman.conf
 sed -i '/^\[multilib\]/,/Include/ s/^#//' /etc/pacman.conf
 pacman -Sy  # refrescar base de datos
 
@@ -22,18 +23,18 @@ pacman -S --needed --noconfirm \
   # Kernel y firmware
   linux linux-headers linux-firmware intel-ucode kmod \
   # Wayland + KDE Plasma 6
-  xorg-xwayland plasma-meta kde-applications-meta sddm \
+  xorg-xwayland plasma-meta kde-applications-meta plasma-wayland-session sddm \
   # Red y conectividad
-  networkmanager plasma-nm network-manager-applet \
+  networkmanager plasma-nm network-manager-applet wpa_supplicant wireless_tools \
   bluez bluez-utils bluedevil blueman \
-  pipewire pipewire-pulse wireplumber alsa-utils pavucontrol \
+  pipewire pipewire-pulse pipewire-alsa wireplumber alsa-utils pavucontrol \
   usbutils udisks2 udiskie \
   # Virtualización
-  qemu libvirt virt-manager virt-viewer bridge-utils ebtables \
-  xen seabios edk2-ovmf \
+  qemu qemu-full libvirt dnsmasq virt-manager virt-viewer bridge-utils ebtables virt-install \
+  seabios edk2-ovmf \
   # Contenedores
   lxc lxd docker docker-compose \
-  podman podman-docker podman-compose cockpit cockpit-podman \
+  podman podman-docker cockpit cockpit-podman \
   # Multimedia
   ffmpeg gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav \
   libdvdcss libva-intel-driver libva-vdpau-driver vdpau-driver \
@@ -45,14 +46,14 @@ pacman -S --needed --noconfirm \
   # Hardware / diagnóstico
   inxi hwinfo lshw dmidecode pciutils \
   # CLI de sistema
-  htop fastfetch neofetch screenfetch glances nmon iotop duf ncdu btop tmux screen \
+  htop fastfetch neofetch glances iotop ncdu btop tmux screen \
   # Bajo nivel y módulos
   dkms kexec-tools acpi acpid cpupower \
   # Utilidades comunes
   wget curl tar unzip zip rsync git man-db man-pages which sudo chrony systemd-timesyncd gedit \
   # NVIDIA + optimización gaming
   nvidia nvidia-utils lib32-nvidia-utils mangohud lib32-mangohud gamescope gamemode \
-  steam lutris wine heroic-gui \
+  steam lutris wine \
   # Seguridad / sandbox
   nsjail \
   # Snapshots
@@ -60,7 +61,15 @@ pacman -S --needed --noconfirm \
   # GRUB y herramientas
   grub efibootmgr os-prober
 
-# 6. Instalar AUR helper (paru)
+# 6. Instalar xen desde AUR (no está en repos oficiales)
+cd /tmp
+git clone https://aur.archlinux.org/xen.git
+cd xen
+makepkg -si --noconfirm
+cd /
+rm -rf /tmp/xen
+
+# 7. Instalar AUR helper (paru)
 cd /tmp
 git clone https://aur.archlinux.org/paru.git
 cd paru
@@ -68,21 +77,20 @@ makepkg -si --noconfirm
 cd /
 rm -rf /tmp/paru
 
-# 7. Instalar paquetes AUR opcionales
+# 8. Instalar paquetes AUR opcionales
 paru -S --noconfirm --needed \
-  aqemu snapper-gui btrfs-assistant grub-customizer podman-desktop
+  aqemu snapper-gui btrfs-assistant grub-customizer podman-desktop heroic-games-launcher-bin
 
-# 8. Configurar Flatpak y aplicaciones de Flathub
+# 9. Configurar Flatpak y aplicaciones de Flathub
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install -y \
   flathub org.libreoffice.LibreOffice \
   flathub org.videolan.VLC \
   flathub tv.kodi.Kodi \
   flathub org.librewolf.Librewolf \
-  flathub org.gimp.GIMP \
-  com.visualstudio.code
+  flathub com.visualstudio.code
 
-# 9. Habilitar y arrancar servicios systemd
+# 10. Habilitar y arrancar servicios systemd
 systemctl enable \
   sddm NetworkManager bluetooth libvirtd lxd docker \
   snapper-timeline.timer snapper-cleanup.timer

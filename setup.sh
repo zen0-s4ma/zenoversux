@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# 1. root?
+# 1. ¿root?
 if [ "$EUID" -ne 0 ]; then
   echo "Por favor, ejecuta este script como root."
   exit 1
@@ -13,164 +13,158 @@ for repo in extra community multilib; do
 done
 pacman -Sy
 
-# 3. actualizar
+# 3. Actualizar sistema
 pacman -Syu --noconfirm
 
-# 4. paquetes oficiales
-# Definición de paquetes por categoría
-
-if pacman -Qi iptables &>/dev/null; then
-  pacman -Rs --noconfirm iptables
-fi
+# 4. Paquetes oficiales por categoría
 
 PKGS_basics=(
-  base-devel        # repo: core, descripción: Herramientas basicas de desarrollo 
-  git               # repo: core, descripción: Herramienta git para gestion de repositorios de codigo
+  base-devel        # repo: core, descripción: Herramientas básicas de desarrollo
+  git               # repo: core, descripción: Control de versiones Git
 )
 
 PKGS_kernel=(
   linux             # repo: core, descripción: Kernel de Linux
   linux-headers     # repo: core, descripción: Cabeceras del kernel de Linux
-  linux-firmware    # repo: core, descripción: Firmware para dispositivos del kernel
-  intel-ucode       # repo: core, descripción: Microcódigo actualizado para CPUs Intel
-  kmod              # repo: core, descripción: Utilidades para gestión de módulos del kernel
-  base-devel        # repo: core, descripción: Grupo de herramientas esenciales de desarrollo
+  linux-firmware    # repo: core, descripción: Firmware del kernel
+  intel-ucode       # repo: core, descripción: Microcódigo CPUs Intel
+  kmod              # repo: core, descripción: Gestión de módulos
 )
 
 PKGS_desktop=(
   xorg-xwayland              # repo: extra, descripción: Servidor X en Wayland
-  plasma-meta                # repo: extra, descripción: Metapaquete de KDE Plasma
-  kde-applications-meta      # repo: extra, descripción: Metapaquete de aplicaciones KDE
+  plasma-meta                # repo: extra, descripción: Metapaquete KDE Plasma
+  kde-applications-meta      # repo: extra, descripción: Metapaquete apps KDE
   sddm                       # repo: extra, descripción: Gestor de sesiones SDDM
 )
 
 PKGS_network=(
-  networkmanager            # repo: extra, descripción: Gestión de conexiones de red
-  plasma-nm                 # repo: extra, descripción: Applet de red para Plasma
-  network-manager-applet    # repo: extra, descripción: Applet GTK para NetworkManager
-  wpa_supplicant            # repo: extra, descripción: Cliente para WPA/WPA2 Wi-Fi
-  wireless_tools            # repo: core, descripción: Herramientas para configuración inalámbrica
-  bluez                     # repo: extra, descripción: Protocolo Bluetooth
+  networkmanager            # repo: extra, descripción: Gestor de red
+  plasma-nm                 # repo: extra, descripción: Applet red Plasma
+  network-manager-applet    # repo: extra, descripción: Applet GTK NM
+  wpa_supplicant            # repo: extra, descripción: Cliente WPA/WPA2 Wi-Fi
+  wireless_tools            # repo: core, descripción: Herramientas Wi-Fi
+  bluez                     # repo: extra, descripción: Bluetooth
   bluez-utils               # repo: extra, descripción: Utilidades Bluetooth
-  bluedevil                 # repo: extra, descripción: Integración Bluetooth en KDE
+  bluedevil                 # repo: extra, descripción: Integración BT en KDE
   blueman                   # repo: extra, descripción: Applet Bluetooth GTK
   pipewire                  # repo: extra, descripción: Servidor multimedia
-  pipewire-pulse            # repo: extra, descripción: Módulo de PulseAudio para PipeWire
-  pipewire-alsa             # repo: extra, descripción: Módulo ALSA para PipeWire
-  wireplumber               # repo: extra, descripción: Gestor de sesiones PipeWire
-  alsa-utils                # repo: extra, descripción: Utilidades ALSA de audio
-  pavucontrol               # repo: extra, descripción: Control de volumen de PulseAudio
-  usbutils                  # repo: core, descripción: Herramientas para dispositivos USB
-  udisks2                   # repo: extra, descripción: Servicio de gestión de discos
-  udiskie                   # repo: extra, descripción: Applet de desmontaje automático
+  pipewire-pulse            # repo: extra, descripción: PulseAudio en PipeWire
+  pipewire-alsa             # repo: extra, descripción: ALSA en PipeWire
+  wireplumber               # repo: extra, descripción: Gestor PipeWire
+  alsa-utils                # repo: extra, descripción: Utilidades ALSA
+  pavucontrol               # repo: extra, descripción: Control de volumen
+  usbutils                  # repo: core, descripción: Herramientas USB
+  udisks2                   # repo: extra, descripción: Servicio discos
+  udiskie                   # repo: extra, descripción: Auto-desmonte discos
 )
 
 PKGS_virtualization=(
-  libvirt           # repo: extra, descripción: API para gestión de máquinas virtuales
-  dnsmasq           # repo: extra, descripción: Servidor DNS/DHCP liviano
-  virt-manager      # repo: extra, descripción: GUI para gestionar virtualización
-  virt-viewer       # repo: extra, descripción: Visor de consolas de VMs
-  bridge-utils      # repo: extra, descripción: Herramientas para puentes de red
-  ebtables          # repo: extra, descripción: Filtrado Ethernet bridging
-  virt-install      # repo: extra, descripción: Script de instalación de VMs
-  seabios           # repo: extra, descripción: BIOS de QEMU/SeaBIOS
-  edk2-ovmf         # repo: extra, descripción: Firmware UEFI para QEMU
+  libvirt           # repo: extra, descripción: API VMs
+  dnsmasq           # repo: extra, descripción: DNS/DHCP liviano
+  virt-manager      # repo: extra, descripción: GUI VMs
+  virt-viewer       # repo: extra, descripción: Visor consolas VMs
+  bridge-utils      # repo: extra, descripción: Puentes de red
+  ebtables          # repo: extra, descripción: Filtrado bridging
+  virt-install      # repo: extra, descripción: Script instalación VMs
+  seabios           # repo: extra, descripción: BIOS QEMU/SeaBIOS
+  edk2-ovmf         # repo: extra, descripción: UEFI para QEMU
 )
 
 PKGS_containers=(
   lxc               # repo: extra, descripción: Contenedores Linux
-  lxd               # repo: extra, descripción: Demonio LXD con REST API
-  docker            # repo: extra, descripción: Plataforma de contenedores Docker
-  docker-compose    # repo: extra, descripción: Orquestador de contenedores
+  lxd               # repo: extra, descripción: Demonio LXD
+  docker            # repo: extra, descripción: Plataforma Docker
+  docker-compose    # repo: extra, descripción: Orquestador Docker
   podman            # repo: extra, descripción: Contenedores sin demonio
-  cockpit           # repo: extra, descripción: Interfaz web de gestión de servidores
-  cockpit-podman    # repo: extra, descripción: Módulo Podman para Cockpit
+  cockpit           # repo: extra, descripción: GUI web servidores
+  cockpit-podman    # repo: extra, descripción: Módulo Podman en Cockpit
 )
 
 PKGS_multimedia=(
-  ffmpeg                 # repo: extra, descripción: Procesamiento de audio/video
-  gst-plugins-base       # repo: extra, descripción: Plugins básicos GStreamer
-  gst-plugins-good       # repo: extra, descripción: Plugins "buenos" GStreamer
-  gst-plugins-bad        # repo: extra, descripción: Plugins "malos" GStreamer
-  gst-plugins-ugly       # repo: extra, descripción: Plugins "feos" GStreamer
-  gst-libav              # repo: extra, descripción: Plugins de Libav para GStreamer
-  libdvdcss              # repo: extra, descripción: Biblioteca para descifrar DVDs
-  libva-intel-driver     # repo: extra, descripción: Driver VA-API para Intel
+  ffmpeg                 # repo: extra, descripción: Audio/video
+  gst-plugins-base       # repo: extra, descripción: GStreamer básico
+  gst-plugins-good       # repo: extra, descripción: GStreamer “good”
+  gst-plugins-bad        # repo: extra, descripción: GStreamer “bad”
+  gst-plugins-ugly       # repo: extra, descripción: GStreamer “ugly”
+  gst-libav              # repo: extra, descripción: Libav en GStreamer
+  libdvdcss              # repo: extra, descripción: Desencriptar DVDs
+  libva-intel-driver     # repo: extra, descripción: VA-API Intel
 )
 
 PKGS_user=(
-  flatpak       # repo: extra, descripción: Plataforma de despliegue de apps
+  flatpak       # repo: extra, descripción: Plataforma de apps
 )
 
 PKGS_development=(
-  python        # repo: core, descripción: Lenguaje de programación Python
-  python-pip    # repo: extra, descripción: Gestor de paquetes Python
-  rust          # repo: extra, descripción: Lenguaje de programación Rust
-  go            # repo: extra, descripción: Lenguaje de programación Go
-  jdk-openjdk   # repo: extra, descripción: Entorno Java OpenJDK
-  nodejs        # repo: extra, descripción: Entorno JavaScript
-  npm           # repo: extra, descripción: Gestor de paquetes JS
-  cmake         # repo: extra, descripción: Herramienta de compilación
-  meson         # repo: extra, descripción: Sistema de construcción moderno
-  ninja         # repo: extra, descripción: Constructor rápido
-  gdb           # repo: extra, descripción: Depurador GNU
-  clang         # repo: extra, descripción: Compilador C/C++
+  python        # repo: core, descripción: Python
+  python-pip    # repo: extra, descripción: Pip para Python
+  rust          # repo: extra, descripción: Rust
+  go            # repo: extra, descripción: Go
+  jdk-openjdk   # repo: extra, descripción: Java OpenJDK
+  nodejs        # repo: extra, descripción: Node.js
+  npm           # repo: extra, descripción: NPM
+  cmake         # repo: extra, descripción: CMake
+  meson         # repo: extra, descripción: Meson
+  ninja         # repo: extra, descripción: Ninja
+  gdb           # repo: extra, descripción: Depurador GDB
+  clang         # repo: extra, descripción: Compilador Clang
 )
 
 PKGS_hardware=(
-  inxi          # repo: extra, descripción: Información del sistema
-  hwinfo        # repo: extra, descripción: Proveedor de info de hardware
-  lshw          # repo: extra, descripción: Listado de hardware
-  dmidecode     # repo: extra, descripción: Info de tablas DMI/SMBIOS
-  pciutils      # repo: core, descripción: Herramientas para bus PCI
+  inxi          # repo: extra, descripción: Info sistema
+  hwinfo        # repo: extra, descripción: Info hardware
+  lshw          # repo: extra, descripción: Listado hardware
+  dmidecode     # repo: extra, descripción: DMI/SMBIOS
+  pciutils      # repo: core, descripción: Bus PCI
 )
 
 PKGS_cli=(
-  htop         # repo: extra, descripción: Monitor de procesos interactivo
-  fastfetch    # repo: extra, descripción: Info del sistema tipo Neofetch
-  glances      # repo: extra, descripción: Monitor de sistema en consola
-  iotop        # repo: extra, descripción: Monitor de I/O por procesos
-  ncdu         # repo: extra, descripción: Analizador de disco en consola
-  btop         # repo: extra, descripción: Monitor de recursos en C++
-  tmux         # repo: extra, descripción: Multiplexor de terminales
-  screen       # repo: extra, descripción: Multiplexor de terminales clásico
+  htop         # repo: extra, descripción: Monitor procesos
+  fastfetch    # repo: extra, descripción: Info sistema ASCII
+  glances      # repo: extra, descripción: Monitor consola
+  iotop        # repo: extra, descripción: I/O procesos
+  ncdu         # repo: extra, descripción: Análisis disco
+  btop         # repo: extra, descripción: Monitor C++
+  tmux         # repo: extra, descripción: Multiplexor terminal
+  screen       # repo: extra, descripción: Multiplexor clásico
 )
 
 PKGS_modules=(
-  dkms         # repo: extra, descripción: Gestión dinámica de módulos
-  kexec-tools  # repo: extra, descripción: Herramientas para reinicio rápido
-  acpi         # repo: extra, descripción: Información de ACPI
-  acpid        # repo: extra, descripción: Demonio de eventos ACPI
-  cpupower     # repo: extra, descripción: Gestión de frecuencia CPU
+  dkms         # repo: extra, descripción: DKMS
+  kexec-tools  # repo: extra, descripción: kexec
+  acpi         # repo: extra, descripción: Info ACPI
+  acpid        # repo: extra, descripción: Demonio ACPI
+  cpupower     # repo: extra, descripción: Gestión CPU
 )
 
 PKGS_utils=(
-  wget              # repo: extra, descripción: Descarga de archivos web
-  curl              # repo: extra, descripción: Transferencia de datos con URL
-  tar               # repo: core, descripción: Archivador de archivos
-  unzip             # repo: extra, descripción: Descompresión de ZIP
-  zip               # repo: extra, descripción: Compresión ZIP
-  rsync             # repo: extra, descripción: Sincronización de archivos
-  git               # repo: extra, descripción: Control de versiones Git
-  man-db            # repo: extra, descripción: Base de datos de man pages
-  man-pages         # repo: extra, descripción: Páginas de manual del sistema
-  which             # repo: core, descripción: Localizador de ejecutables
-  sudo              # repo: extra, descripción: Ejecutar comandos como otro usuario
-  chrony            # repo: extra, descripción: Cliente NTP
-  gedit             # repo: extra, descripción: Editor de texto GTK
+  iptables-nft         # repo: extra, descripción: iptables sobre nftables
+  wget                 # repo: extra, descripción: Descargas web
+  curl                 # repo: extra, descripción: Transferencia URL
+  tar                  # repo: core, descripción: Archivador
+  unzip                # repo: extra, descripción: Descompresión ZIP
+  zip                  # repo: extra, descripción: Compresión ZIP
+  rsync                # repo: extra, descripción: Sincronización
+  man-db               # repo: extra, descripción: DB páginas man
+  man-pages            # repo: extra, descripción: Páginas de man
+  which                # repo: core, descripción: Localizar ejecutables
+  sudo                 # repo: extra, descripción: Ejecutar como otro
+  chrony               # repo: extra, descripción: Cliente NTP
+  gedit                # repo: extra, descripción: Editor GTK
 )
 
 PKGS_gaming=(
-  nvidia              # repo: extra, descripción: Drivers propietarios NVIDIA
-  nvidia-utils        # repo: extra, descripción: Bibliotecas NVIDIA
-  lib32-nvidia-utils  # repo: multilib, descripción: Bibliotecas NVIDIA 32-bit
-  mangohud            # repo: extra, descripción: OSD para benchmarks de juegos
-  lib32-mangohud      # repo: multilib, descripción: OSD 32-bit para juegos
-  gamescope           # repo: extra, descripción: Compositor para juegos
-  gamemode            # repo: extra, descripción: Optimización de rendimiento juegos
-  steam               # repo: multilib, descripción: Plataforma de Valve
-  lutris              # repo: extra, descripción: Gestión de juegos
-  wine                # repo: multilib, descripción: Ejecutar apps Windows
+  nvidia              # repo: extra, descripción: Drivers NVIDIA
+  nvidia-utils        # repo: extra, descripción: Libs NVIDIA
+  lib32-nvidia-utils  # repo: multilib, descripción: Libs 32-bit
+  mangohud            # repo: extra, descripción: OSD benchmarks
+  lib32-mangohud      # repo: multilib, descripción: OSD 32-bit
+  gamescope           # repo: extra, descripción: Compositor juegos
+  gamemode            # repo: extra, descripción: Optimización juegos
+  steam               # repo: multilib, descripción: Steam
+  lutris              # repo: extra, descripción: Gestor de juegos
+  wine                # repo: multilib, descripción: Windows apps
 )
 
 PKGS_security=(
@@ -178,16 +172,16 @@ PKGS_security=(
 )
 
 PKGS_snapshots=(
-  snapper  # repo: extra, descripción: Gestor de snapshots Btrfs
+  snapper  # repo: extra, descripción: Snapshots Btrfs
 )
 
 PKGS_bootloader=(
-  grub         # repo: core, descripción: Gestor de arranque GRUB
-  efibootmgr   # repo: extra, descripción: Gestión de entradas EFI
+  grub         # repo: core, descripción: GRUB
+  efibootmgr   # repo: extra, descripción: EFI entries
   os-prober    # repo: extra, descripción: Detecta otros S.O.
 )
 
-# Instalación de paquetes oficiales
+# 5. Instalar paquetes oficiales (incluye iptables-nft para resolver el conflicto)
 pacman -S --needed --noconfirm \
   "${PKGS_basics[@]}" \
   "${PKGS_kernel[@]}" \
@@ -207,15 +201,14 @@ pacman -S --needed --noconfirm \
   "${PKGS_snapshots[@]}" \
   "${PKGS_bootloader[@]}"
 
-# 5. paru (AUR helper)
+# 6. Compilar e instalar paru (AUR helper)
 cd /tmp
 git clone https://aur.archlinux.org/paru.git
 cd paru && makepkg -si --noconfirm
 cd / && rm -rf /tmp/paru
 
-# 6. AUR opcionales
+# 7. Instalación de AUR
 paru -S --needed --noconfirm \
-  xen \
   aqemu \
   snapper-gui \
   btrfs-assistant \
@@ -226,19 +219,26 @@ paru -S --needed --noconfirm \
   libva-vdpau-driver \
   vdpau-driver
 
-# 7. Flatpak
+# 8. Flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install -y \
-  org.libreoffice.LibreOffice org.videolan.VLC tv.kodi.Kodi \
-  org.librewolf.Librewolf org.gimp.GIMP com.visualstudio.code
+  org.libreoffice.LibreOffice \
+  org.videolan.VLC \
+  tv.kodi.Kodi \
+  org.librewolf.Librewolf \
+  org.gimp.GIMP \
+  com.visualstudio.code
 
-# 8. servicios
-systemctl enable sddm NetworkManager bluetooth libvirtd lxd docker \
-               snapper-timeline.timer snapper-cleanup.timer
-systemctl start  sddm NetworkManager bluetooth libvirtd lxd docker \
-               snapper-timeline.timer snapper-cleanup.timer
+# 9. Habilitar y arrancar servicios
+systemctl enable \
+  sddm NetworkManager bluetooth libvirtd lxd docker \
+  snapper-timeline.timer snapper-cleanup.timer
 
-# 11. pausa y reboot
+systemctl start \
+  sddm NetworkManager bluetooth libvirtd lxd docker \
+  snapper-timeline.timer snapper-cleanup.timer
+
+# 10. Pausa y reboot
 echo -e "\n¡Instalación completada!"
 read -n1 -s -r -p "Presiona cualquier tecla para reiniciar..."
 echo

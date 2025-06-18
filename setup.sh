@@ -183,22 +183,22 @@ PKGS_bootloader=(
 # 5. Instalar paquetes oficiales
 pacman -S --needed --noconfirm \
   "${PKGS_basics[@]}" \
-  "${PKGS_kernel[@]}" \
-  "${PKGS_desktop[@]}" \
-  "${PKGS_network[@]}" \
-  "${PKGS_virtualization[@]}" \
-  "${PKGS_containers[@]}" \
-  "${PKGS_multimedia[@]}" \
-  "${PKGS_user[@]}" \
-  "${PKGS_development[@]}" \
-  "${PKGS_hardware[@]}" \
-  "${PKGS_cli[@]}" \
-  "${PKGS_modules[@]}" \
-  "${PKGS_utils[@]}" \
-  "${PKGS_gaming[@]}" \
-  "${PKGS_security[@]}" \
-  "${PKGS_snapshots[@]}" \
-  "${PKGS_bootloader[@]}"
+#  "${PKGS_kernel[@]}" \
+#  "${PKGS_desktop[@]}" \
+#  "${PKGS_network[@]}" \
+#  "${PKGS_virtualization[@]}" \
+#  "${PKGS_containers[@]}" \
+#  "${PKGS_multimedia[@]}" \
+#  "${PKGS_user[@]}" \
+#  "${PKGS_development[@]}" \
+#  "${PKGS_hardware[@]}" \
+#  "${PKGS_cli[@]}" \
+#  "${PKGS_modules[@]}" \
+#  "${PKGS_utils[@]}" \
+#  "${PKGS_gaming[@]}" \
+#  "${PKGS_security[@]}" \
+#  "${PKGS_snapshots[@]}" \
+#  "${PKGS_bootloader[@]}"
 
 # 6. Compilar e instalar paru (AUR helper)
 cd /tmp
@@ -208,34 +208,34 @@ cd / && rm -rf /tmp/paru
 
 # 7. Instalación de AUR
 paru -S --needed --noconfirm \
-  aqemu \
-  snapper-gui \
-  btrfs-assistant \
-  grub-customizer \
-  podman-desktop \
-  heroic-games-launcher-bin \
-  qemu-full \
-  libva-vdpau-driver \
-  vdpau-driver
+#  aqemu \
+#  snapper-gui \
+#  btrfs-assistant \
+#  grub-customizer \
+#  podman-desktop \
+#  heroic-games-launcher-bin \
+#  libva-vdpau-driver \
+#  vdpau-driver \
+  qemu-full
 
 # 8. Flatpak
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install -y \
-  org.libreoffice.LibreOffice \
-  org.videolan.VLC \
-  tv.kodi.Kodi \
-  org.librewolf.Librewolf \
-  org.gimp.GIMP \
-  com.visualstudio.code
+#flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+#flatpak install -y \
+#  org.libreoffice.LibreOffice \
+#  org.videolan.VLC \
+#  tv.kodi.Kodi \
+#  org.librewolf.Librewolf \
+#  org.gimp.GIMP \
+#  com.visualstudio.code
 
 # 9. Habilitar y arrancar servicios
-systemctl enable \
-  sddm NetworkManager bluetooth libvirtd lxd docker \
-  snapper-timeline.timer snapper-cleanup.timer
+#systemctl enable \
+#  sddm NetworkManager bluetooth libvirtd lxd docker \
+#  snapper-timeline.timer snapper-cleanup.timer
 
-systemctl start \
-  sddm NetworkManager bluetooth libvirtd lxd docker \
-  snapper-timeline.timer snapper-cleanup.timer
+#systemctl start \
+#  sddm NetworkManager bluetooth libvirtd lxd docker \
+#  snapper-timeline.timer snapper-cleanup.timer
 
 # 10. Pausa y reboot
 echo -e "\n¡Instalación completada!"

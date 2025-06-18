@@ -19,6 +19,10 @@ pacman -Syu --noconfirm
 # 4. paquetes oficiales
 # Definición de paquetes por categoría
 
+if pacman -Qi iptables &>/dev/null; then
+  pacman -Rs --noconfirm iptables
+fi
+
 PKGS_basics=(
   base-devel        # repo: core, descripción: Herramientas basicas de desarrollo 
   git               # repo: core, descripción: Herramienta git para gestion de repositorios de codigo
@@ -37,7 +41,6 @@ PKGS_desktop=(
   xorg-xwayland              # repo: extra, descripción: Servidor X en Wayland
   plasma-meta                # repo: extra, descripción: Metapaquete de KDE Plasma
   kde-applications-meta      # repo: extra, descripción: Metapaquete de aplicaciones KDE
-  plasma-wayland-session     # repo: extra, descripción: Sesión de Plasma sobre Wayland
   sddm                       # repo: extra, descripción: Gestor de sesiones SDDM
 )
 
@@ -80,7 +83,6 @@ PKGS_containers=(
   docker            # repo: extra, descripción: Plataforma de contenedores Docker
   docker-compose    # repo: extra, descripción: Orquestador de contenedores
   podman            # repo: extra, descripción: Contenedores sin demonio
-  podman-docker     # repo: extra, descripción: Compatibilidad Docker para Podman
   cockpit           # repo: extra, descripción: Interfaz web de gestión de servidores
   cockpit-podman    # repo: extra, descripción: Módulo Podman para Cockpit
 )
@@ -126,7 +128,6 @@ PKGS_hardware=(
 PKGS_cli=(
   htop         # repo: extra, descripción: Monitor de procesos interactivo
   fastfetch    # repo: extra, descripción: Info del sistema tipo Neofetch
-  neofetch     # repo: extra, descripción: Info del sistema en ASCII
   glances      # repo: extra, descripción: Monitor de sistema en consola
   iotop        # repo: extra, descripción: Monitor de I/O por procesos
   ncdu         # repo: extra, descripción: Analizador de disco en consola
@@ -156,7 +157,6 @@ PKGS_utils=(
   which             # repo: core, descripción: Localizador de ejecutables
   sudo              # repo: extra, descripción: Ejecutar comandos como otro usuario
   chrony            # repo: extra, descripción: Cliente NTP
-  systemd-timesyncd # repo: extra, descripción: Sincronización de tiempo systemd
   gedit             # repo: extra, descripción: Editor de texto GTK
 )
 

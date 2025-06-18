@@ -7,8 +7,8 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# 2. Habilitar extra, community y multilib en /etc/pacman.conf
-for repo in extra community multilib; do
+# 2. Habilitar extra y multilib en /etc/pacman.conf
+for repo in extra multilib; do
   sed -i "/^\[$repo\]/,/^Include/ s/^#//" /etc/pacman.conf
 done
 pacman -Sy
@@ -139,7 +139,6 @@ PKGS_modules=(
 )
 
 PKGS_utils=(
-  iptables-nft         # repo: extra, descripción: iptables sobre nftables
   wget                 # repo: extra, descripción: Descargas web
   curl                 # repo: extra, descripción: Transferencia URL
   tar                  # repo: core, descripción: Archivador
@@ -181,7 +180,7 @@ PKGS_bootloader=(
   os-prober    # repo: extra, descripción: Detecta otros S.O.
 )
 
-# 5. Instalar paquetes oficiales (incluye iptables-nft para resolver el conflicto)
+# 5. Instalar paquetes oficiales
 pacman -S --needed --noconfirm \
   "${PKGS_basics[@]}" \
   "${PKGS_kernel[@]}" \

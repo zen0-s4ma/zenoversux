@@ -7,9 +7,10 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# 2. habilitar extra y multilib
-sed -i '/^\[extra\]/,/^Include/ s/^#//' /etc/pacman.conf
-sed -i '/^\[multilib\]/,/^Include/ s/^#//' /etc/pacman.conf
+# 2. Habilitar extra, community y multilib en /etc/pacman.conf
+for repo in extra community multilib; do
+  sed -i "/^\[$repo\]/,/^Include/ s/^#//" /etc/pacman.conf
+done
 pacman -Sy
 
 # 3. actualizar
@@ -30,7 +31,7 @@ PKGS=(
   pipewire pipewire-pulse pipewire-alsa wireplumber alsa-utils pavucontrol
   usbutils udisks2 udiskie
   # Virtualización
-  qemu qemu-full libvirt dnsmasq virt-manager virt-viewer bridge-utils ebtables virt-install
+  qemu-full libvirt dnsmasq virt-manager virt-viewer bridge-utils ebtables virt-install
   seabios edk2-ovmf
   # Contenedores
   lxc lxd docker docker-compose

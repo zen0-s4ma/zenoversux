@@ -2,16 +2,16 @@
 set -euo pipefail
 
 # 1. ¿root?
-if [ "$EUID" -ne 0 ]; then
-  echo "Por favor, ejecuta este script como root."
-  exit 1
-fi
+#if [ "$EUID" -ne 0 ]; then
+#  echo "Por favor, ejecuta este script como root."
+#  exit 1
+#fi
 
 # 2. Habilitar extra y multilib en /etc/pacman.conf
-for repo in extra multilib; do
-  sed -i "/^\[$repo\]/,/^Include/ s/^#//" /etc/pacman.conf
-done
-pacman -Sy
+#for repo in extra multilib; do
+#  sed -i "/^\[$repo\]/,/^Include/ s/^#//" /etc/pacman.conf
+#done
+#pacman -Sy
 
 # 3. Actualizar sistema
 pacman -Syu --noconfirm
